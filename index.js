@@ -3,10 +3,10 @@ var config = {
     type: Phaser.AUTO,
     width: 1500,
     height: 800,
-    physics:{
+    physics: {
         default: 'arcade',
-        arcade:{
-            gravity:{ y:300 },
+        arcade: {
+            gravity: { y: 300 },
             debug: false
         }
     },
@@ -39,16 +39,16 @@ function preload ()
 {
     
 
-this.load.image('sky', 'assets/background.png');
-this.load.image('ground', 'assets/platform.png');
-this.load.image('ground1', 'assets/platform1.png');
-this.load.image('ground2', 'assets/platform2.png');
-this.load.image('bonfire', 'assets/bonfire.png');
-this.load.image('fireball', 'assets/fireball.png');
-this.load.spritesheet('dude', 
-    'assets/dude.png',
-    { frameWidth: 32, frameHeight: 48 }
-);
+    this.load.image('sky', 'assets/background.png');
+    this.load.image('ground', 'assets/platform.png');
+    this.load.image('ground1', 'assets/platform1.png');
+    this.load.image('ground2', 'assets/platform2.png');
+    this.load.image('bonfire', 'assets/bonfire.png');
+    this.load.image('fireball', 'assets/fireball.png');
+    this.load.spritesheet('dude',
+        'assets/dude.png',
+        { frameWidth: 32, frameHeight: 48 }
+    );
 }
 
 function create ()
@@ -74,7 +74,7 @@ function create ()
     platforms.create(100, 600, 'ground2');
     platforms.create(1400, 600, 'ground2');
 
-    //Player
+    //  Player
     player = this.physics.add.sprite(150, 150, 'dude');
     player.setBounce(0.0);
     player.setCollideWorldBounds(true);
@@ -103,17 +103,16 @@ function create ()
 
     cursors = this.input.keyboard.createCursorKeys();
 
-    //Criação das bonfires
+    //  Criação das bonfires
     bonfires = this.physics.add.group({
-    key: 'bonfire',
-    repeat: 21,
-    setXY: { x: 12, y: 0, stepX: 70 }
+        key: 'bonfire',
+        repeat: 21,
+        setXY: { x: 12, y: 0, stepX: 70 }
     });
 
-    bonfires.children.iterate(function (child) {
-
-    child.setBounceY(Phaser.Math.FloatBetween(0, 0));
-
+    bonfires.children.iterate(function (child) 
+    {
+        child.setBounceY(Phaser.Math.FloatBetween(0, 0));
     });
     this.physics.add.collider(bonfires, platforms);
     this.physics.add.overlap(player, bonfires, collectBonfires, null, this);
@@ -132,71 +131,71 @@ function create ()
 function update ()
 {
     if (cursors.left.isDown)
-{
-    player.setVelocityX(-160);
+    {
+        player.setVelocityX(-160);
 
-    player.anims.play('left', true);
-}
+        player.anims.play('left', true);
+    }
     else if (cursors.right.isDown)
-{
-    player.setVelocityX(160);
+    {
+        player.setVelocityX(160);
 
-    player.anims.play('right', true);
-}
+        player.anims.play('right', true);
+    }
     else
-{
-    player.setVelocityX(0);
+    {
+        player.setVelocityX(0);
 
-    player.anims.play('turn');
-}
+        player.anims.play('turn');
+    }
 
-if (cursors.up.isDown  && player.body.touching.down)
-{
-    player.setVelocityY(-330);
-}
+    if (cursors.up.isDown && player.body.touching.down)
+    {
+        player.setVelocityY(-330);
+    }
 }
 function collectBonfires (player, bonfire)
 {
-bonfire.disableBody(true, true);
+    bonfire.disableBody(true, true);
 
-score += 10;
-scoreText.setText('Score: '+ score);
+    score += 10;
+    scoreText.setText('Score: '+ score);
 
-if (bonfires.countActive(true) === 0)
-{
-    bonfires.children.iterate(function (child) {
+    if (bonfires.countActive(true) === 0)
+    {
+        bonfires.children.iterate(function (child) 
+        {
+            child.enableBody(true, child.x, 0, true, true);
+        });
 
-        child.enableBody(true, child.x, 0, true, true);
+        var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-    });
+        var fireball = fireballs.create(x, 100, 'fireball');
+        var fireball1 = fireballs.create(x, 100, 'fireball');
+        var fireball2 = fireballs.create(x, 100, 'fireball');
+        fireball.setBounce(1);
+        fireball.setCollideWorldBounds(true);
+        fireball.setVelocity(Phaser.Math.Between(-300, 300), 20);
+        fireball1.setBounce(1);
+        fireball1.setCollideWorldBounds(true);
+        fireball1.setVelocity(Phaser.Math.Between(-300, 300), 20);
+        fireball2.setBounce(1);
+        fireball2.setCollideWorldBounds(true);
+        fireball2.setVelocity(Phaser.Math.Between(-300, 300), 20);
 
-    var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-    var fireball = fireballs.create(x, 100, 'fireball');
-    var fireball1 = fireballs.create(x, 100, 'fireball');
-    var fireball2 = fireballs.create(x, 100, 'fireball');
-    fireball.setBounce(1);
-    fireball.setCollideWorldBounds(true);
-    fireball.setVelocity(Phaser.Math.Between(-300, 300), 20);
-    fireball1.setBounce(1);
-    fireball1.setCollideWorldBounds(true);
-    fireball1.setVelocity(Phaser.Math.Between(-300, 300), 20);
-    fireball2.setBounce(1);
-    fireball2.setCollideWorldBounds(true);
-    fireball2.setVelocity(Phaser.Math.Between(-300, 300), 20);
-
-}
+    }
 }
 function hitFireball (player, fireball)
 {
-this.physics.pause();
+    this.physics.pause();
 
-player.setTint(0xff0000);
+    player.setTint(0xff0000);
 
-player.anims.play('turn');
+    player.anims.play('turn');
 
-gameOver = true;
-if(gameOver){
-    location.reload();
-}
+    gameOver = true;
+    if (gameOver)
+    {
+        location.reload();
+    }
 }
